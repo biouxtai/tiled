@@ -73,6 +73,7 @@
 #include "utils.h"
 #include "zoomable.h"
 #include "commandbutton.h"
+#include "cellpropertiestool.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -308,6 +309,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
     toolManager->registerTool(new SelectionTool(this));
+    toolManager->registerTool(new CellPropertiesTool(this));
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(areaObjectsTool);
@@ -393,20 +395,6 @@ void MainWindow::changeEvent(QEvent *event)
     default:
         break;
     }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(true);
-}
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(false);
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
