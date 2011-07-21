@@ -309,15 +309,14 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
                 w.writeStartElement(QLatin1String("tile"));
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
 
-//			    writeProperties(w, tileLayer->cellAt(x, y).properties());
+//                writeProperties(w, tileLayer->cellAt(x, y).properties());
 
-			    Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
-			    Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
-			    for (; it != it_end; ++it) 
-			    {
-		            // output the tile information
-            		w.writeAttribute(it.key(),it.value());	
-			    }
+                Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
+                Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
+                for (; it != it_end; ++it) {
+                    // output the tile information
+                    w.writeAttribute(it.key(),it.value());    
+                }
 
                 w.writeEndElement();
             }
