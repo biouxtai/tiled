@@ -12,5 +12,6 @@ ui_*.h
 *.pro.user
 qrc_*
 docs/html
+bin/*.app
 
 tests/test_mapreader

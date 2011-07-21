@@ -25,7 +25,7 @@
 #include "mapdocument.h"
 #include "mapscene.h"
 #include "tilelayer.h"
-#include "PropertiesDialog.h"
+#include "propertiesdialog.h"
 
 #include <math.h>
 #include <QVector>
