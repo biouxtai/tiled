@@ -79,7 +79,10 @@ private:
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
 	void writeCellProperties(QXmlStreamWriter &w,
-							 const TileLayer *tileLayer);
+							 const TileLayer *tileLayer,
+							 QString encoding,
+							 QString compression
+							 );
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths;
@@ -309,16 +312,6 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
                 const uint gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
                 w.writeStartElement(QLatin1String("tile"));
                 w.writeAttribute(QLatin1String("gid"), QString::number(gid));
-
-//                writeProperties(w, tileLayer->cellAt(x, y).properties());
-
-                Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
-                Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
-                for (; it != it_end; ++it) {
-                    // output the tile information
-                    w.writeAttribute(it.key(),it.value());    
-                }
-
                 w.writeEndElement();
             }
         }
@@ -365,7 +358,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
 
     w.writeEndElement(); // </data>
 
-	writeCellProperties(w,tileLayer);
+	writeCellProperties(w,tileLayer,encoding,compression);
 
     w.writeEndElement(); // </layer>
 }
@@ -492,24 +485,62 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
 }
 
 void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
-											const TileLayer *tileLayer)
-{
+											const TileLayer *tileLayer,
+											QString encoding,
+											QString compression){
+
+	QByteArray tileData; // only used if encoding/compressing
 	w.writeStartElement(QLatin1String("cell"));
-	
+    if (!encoding.isEmpty())
+        w.writeAttribute(QLatin1String("encoding"), encoding);
+    if (!compression.isEmpty())
+        w.writeAttribute(QLatin1String("compression"), compression);
+    w.writeCharacters(QLatin1String("\n  "));
     for (int y = 0; y < tileLayer->height(); ++y) {
         for (int x = 0; x < tileLayer->width(); ++x) {
-            w.writeStartElement(QLatin1String("properties"));
 
+			if (encoding==QLatin1String("base64")){
+				if (x!=0||y!=0)
+					tileData.append("\n");
+				tileData.append("properties:{");
+			} else {
+				w.writeStartElement(QLatin1String("properties"));
+			}
             Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
             Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
             for (; it != it_end; ++it) {
                 // output the tile information
-                w.writeAttribute(it.key(),it.value());    
+				if (encoding==QLatin1String("base64")){
+					tileData.append("\"");
+					tileData.append(it.key().toAscii());
+					tileData.append("\":\"");
+					tileData.append(it.value().toAscii());
+					tileData.append("\"");
+					it++;
+					if (it!=it_end)
+						tileData.append(",");
+					it--;
+
+				} else {
+                    w.writeAttribute(it.key(),it.value());    
+				}
             }
 
-            w.writeEndElement();
+			if (encoding==QLatin1String("base64")){
+				tileData.append("}");
+			} else {
+	            w.writeEndElement();
+			}
         }
     }
+	if (encoding==QLatin1String("base64")){
+        if (mLayerDataFormat == MapWriter::Base64Gzip)
+            tileData = compress(tileData, Gzip);
+        else if (mLayerDataFormat == MapWriter::Base64Zlib)
+            tileData = compress(tileData, Zlib);
+        w.writeCharacters(QString::fromLatin1(tileData.toBase64()));
+	}
+    w.writeCharacters(QLatin1String("\n  "));
 	w.writeEndElement();
 }
 
