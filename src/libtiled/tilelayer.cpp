@@ -40,8 +40,6 @@ TileLayer::TileLayer(const QString &name, int x, int y, int width, int height):
     mMaxTileSize(0, 0),
     mGrid(width * height)
 {
-    Q_ASSERT(width >= 0);
-    Q_ASSERT(height >= 0);
 }
 
 QRegion TileLayer::region() const
@@ -69,8 +67,6 @@ QRegion TileLayer::region() const
 
 void TileLayer::setCell(int x, int y, const Cell &cell)
 {
-    Q_ASSERT(contains(x, y));
-
     if (cell.tile) {
         if (cell.tile->width() > mMaxTileSize.width()) {
             mMaxTileSize.setWidth(cell.tile->width());
@@ -82,8 +78,18 @@ void TileLayer::setCell(int x, int y, const Cell &cell)
             if (mMap)
                 mMap->adjustMaxTileSize(mMaxTileSize);
         }
+
+		//set the cell properties here from the tile.  these are the defaults.
+		//they will be overwritten by the UI form for cell properties.
+		//!fixme: not working
+		Properties p = cell.properties();
+		p.clear();
+		Tile *t = cell.tile;
+		
+		p.merge(t->properties());
     }
 
+	
     mGrid[x + y * mWidth] = cell;
 }
 

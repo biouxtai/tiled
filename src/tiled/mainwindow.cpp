@@ -74,6 +74,7 @@
 #include "utils.h"
 #include "zoomable.h"
 #include "commandbutton.h"
+#include "cellpropertiestool.h"
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -325,7 +326,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mStampBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
+<<<<<<< HEAD
     toolManager->registerTool(new TileSelectionTool(this));
+=======
+    toolManager->registerTool(new TileSelectionTool(this));
+    toolManager->registerTool(new CellPropertiesTool(this));
+>>>>>>> 598cacf... final files needed for cell properties to work.  mainwindow registers the tool to the toolbar.  tilelayer has cell now inheriting from object.  tiled.pro updated to compile the new files.
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(new EditPolygonTool(this));
@@ -414,20 +420,6 @@ void MainWindow::changeEvent(QEvent *event)
     default:
         break;
     }
-}
-
-void MainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(true);
-}
-
-void MainWindow::keyReleaseEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Space && !event->isAutoRepeat())
-        if (MapView *mapView = mDocumentManager->currentMapView())
-            mapView->setHandScrolling(false);
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
