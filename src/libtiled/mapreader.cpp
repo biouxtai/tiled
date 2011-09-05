@@ -84,12 +84,12 @@ private:
     void decodeBinaryLayerData(TileLayer *tileLayer,
                                const QStringRef &text,
                                const QStringRef &compression);
-	void decodeBinaryCellPropertyData(TileLayer *tileLayer,
+    void decodeBinaryCellPropertyData(TileLayer *tileLayer,
                                       const QStringRef &text,
                                       const QStringRef &compression);
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
-	void readLayerCellProperties(TileLayer *tileLayer);
+    void readLayerCellProperties(TileLayer *tileLayer);
     /**
      * Returns the cell for the given global tile ID. When an error occurs,
      * \a ok is set to false and an error is raised.
@@ -392,7 +392,7 @@ TileLayer *MapReaderPrivate::readLayer()
         else if (xml.name() == "data")
             readLayerData(tileLayer);
         else if (xml.name() == "cell")
-        	readLayerCellProperties(tileLayer);
+            readLayerCellProperties(tileLayer);
         else
             readUnknownElement();
     }
