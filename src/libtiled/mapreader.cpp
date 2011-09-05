@@ -85,6 +85,7 @@ private:
                                const QStringRef &compression);
     void decodeCSVLayerData(TileLayer *tileLayer, const QString &text);
 
+	void readLayerCellProperties(TileLayer *tileLayer);
     /**
      * Returns the cell for the given global tile ID. When an error occurs,
      * \a ok is set to false and an error is raised.
@@ -387,11 +388,47 @@ TileLayer *MapReaderPrivate::readLayer()
             tileLayer->mergeProperties(readProperties());
         else if (xml.name() == "data")
             readLayerData(tileLayer);
+        else if (xml.name() == "cell")
+        	readLayerCellProperties(tileLayer);
         else
             readUnknownElement();
     }
 
     return tileLayer;
+}
+
+void MapReaderPrivate::readLayerCellProperties(TileLayer *tileLayer)
+{
+    Q_ASSERT(xml.isStartElement() && xml.name() == "cell");
+
+    int x = 0;
+    int y = 0;
+
+    while (xml.readNext() != QXmlStreamReader::Invalid) {
+        if (xml.isEndElement()){
+        	if (xml.name()=="cell"){
+	            break;
+        	}
+        }
+        else if (xml.isStartElement()) {
+		    const QXmlStreamAttributes atts = xml.attributes();
+			Properties p;
+			QXmlStreamAttributes::const_iterator it = atts.constBegin();
+			QXmlStreamAttributes::const_iterator it_end = atts.constEnd();
+			
+			for (; it != it_end; ++it) {
+				p.insert(it->name().toString(),it->value().toString());
+			}
+						
+			tileLayer->getCellAt(x,y)->setProperties( p );
+			x++;
+			
+			if (x >= tileLayer->width()) {
+			    x = 0;
+			    y++;
+			}
+        }
+    }
 }
 
 void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
@@ -423,16 +460,6 @@ void MapReaderPrivate::readLayerData(TileLayer *tileLayer)
                     tileLayer->setCell(x, y, cell);
                 else
                     xml.raiseError(tr("Invalid tile: %1").arg(gid));
-
-                Properties p;
-                QXmlStreamAttributes::const_iterator it = atts.constBegin();
-                QXmlStreamAttributes::const_iterator it_end = atts.constEnd();
-                for (; it != it_end; ++it) {
-                    if (it->name().toString().compare(QLatin1String("gid"),
-                                  Qt::CaseInsensitive)!=0)
-                        p.insert(it->name().toString(),it->value().toString());
-                }
-                tileLayer->getCellAt(x,y)->setProperties( p );
                 
                 x++;
                 if (x >= tileLayer->width()) {
