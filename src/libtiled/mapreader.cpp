@@ -533,7 +533,6 @@ void MapReaderPrivate::decodeBinaryCellPropertyData(TileLayer *tileLayer,
     int x = 0;
     int y = 0;
 
-//    tileData.remove(0,1);   // strip the \n at the beginning of the data
     const QString sWork = QString::fromAscii(tileData);
     QStringList qslWork = sWork.split(QLatin1String("\n"));
 
@@ -545,7 +544,7 @@ void MapReaderPrivate::decodeBinaryCellPropertyData(TileLayer *tileLayer,
         str.remove(QLatin1String("properties:{"));
         str.remove(QLatin1String("}"));
 
-//** Need to handle the decoding of the JSON object properties get encoded to
+//** Need to handle the decoding of the JSON object that cell properties get encoded to
         Properties p;
 
         QStringList::const_iterator it;

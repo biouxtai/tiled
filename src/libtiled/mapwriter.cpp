@@ -498,14 +498,13 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
     w.writeCharacters(QLatin1String("\n  "));
     for (int y = 0; y < tileLayer->height(); ++y) {
         for (int x = 0; x < tileLayer->width(); ++x) {
-
             if (encoding == QLatin1String("base64")){
                 if (x != 0 || y != 0)
                     tileData.append("\n");
                 tileData.append("properties:{");
-            } else {
+            } else
                 w.writeStartElement(QLatin1String("properties"));
-            }
+
             Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
             Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
             for (; it != it_end; ++it) {
@@ -521,16 +520,14 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
                         tileData.append(",");
                     it--;
 
-                } else {
+                } else
                     w.writeAttribute(it.key(),it.value());    
-                }
             }
 
-            if (encoding == QLatin1String("base64")){
+            if (encoding == QLatin1String("base64"))
                 tileData.append("}");
-            } else {
+            else
                 w.writeEndElement();
-            }
         }
     }
     if (encoding == QLatin1String("base64")){
