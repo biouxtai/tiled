@@ -466,7 +466,7 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
     for (int y = 0; y < tileLayer->height(); ++y) {
         for (int x = 0; x < tileLayer->width(); ++x) {
 
-			if (encoding==QLatin1String("base64")){
+			if (encoding == QLatin1String("base64")){
 				if (x!=0||y!=0)
 					tileData.append("\n");
 				tileData.append("properties:{");
@@ -477,7 +477,7 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
             Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
             for (; it != it_end; ++it) {
                 // output the tile information
-				if (encoding==QLatin1String("base64")){
+				if (encoding == QLatin1String("base64")){
 					tileData.append("\"");
 					tileData.append(it.key().toAscii());
 					tileData.append("\":\"");
@@ -493,14 +493,14 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
 				}
             }
 
-			if (encoding==QLatin1String("base64")){
+			if (encoding == QLatin1String("base64")){
 				tileData.append("}");
 			} else {
 	            w.writeEndElement();
 			}
         }
     }
-	if (encoding==QLatin1String("base64")){
+	if (encoding == QLatin1String("base64")){
         if (mLayerDataFormat == MapWriter::Base64Gzip)
             tileData = compress(tileData, Gzip);
         else if (mLayerDataFormat == MapWriter::Base64Zlib)
