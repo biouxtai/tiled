@@ -467,7 +467,7 @@ void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
         for (int x = 0; x < tileLayer->width(); ++x) {
 
 			if (encoding == QLatin1String("base64")){
-				if (x!=0||y!=0)
+				if (x != 0 || y != 0)
 					tileData.append("\n");
 				tileData.append("properties:{");
 			} else {
