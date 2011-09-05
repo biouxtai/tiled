@@ -326,12 +326,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WFlags flags)
     toolManager->registerTool(mStampBrush);
     toolManager->registerTool(mBucketFillTool);
     toolManager->registerTool(new Eraser(this));
-<<<<<<< HEAD
-    toolManager->registerTool(new TileSelectionTool(this));
-=======
     toolManager->registerTool(new TileSelectionTool(this));
     toolManager->registerTool(new CellPropertiesTool(this));
->>>>>>> 598cacf... final files needed for cell properties to work.  mainwindow registers the tool to the toolbar.  tilelayer has cell now inheriting from object.  tiled.pro updated to compile the new files.
     toolManager->addSeparator();
     toolManager->registerTool(new ObjectSelectionTool(this));
     toolManager->registerTool(new EditPolygonTool(this));

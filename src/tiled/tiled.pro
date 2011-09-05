@@ -118,13 +118,10 @@ SOURCES += aboutdialog.cpp \
     tiledapplication.cpp \
     command.cpp \
     abstractobjecttool.cpp \
-<<<<<<< HEAD
     changepolygon.cpp \
     editpolygontool.cpp \
-    selectionrectangle.cpp
-=======
+    selectionrectangle.cpp \
     cellpropertiestool.cpp
->>>>>>> 598cacf... final files needed for cell properties to work.  mainwindow registers the tool to the toolbar.  tilelayer has cell now inheriting from object.  tiled.pro updated to compile the new files.
 
 HEADERS += aboutdialog.h \
     automapper.h \
@@ -209,14 +206,10 @@ HEADERS += aboutdialog.h \
     tiledapplication.h \
     command.h \
     abstractobjecttool.h \
-<<<<<<< HEAD
     changepolygon.h \
     editpolygontool.h \
-    selectionrectangle.h
-=======
+    selectionrectangle.h \
     cellpropertiestool.h
-    
->>>>>>> 598cacf... final files needed for cell properties to work.  mainwindow registers the tool to the toolbar.  tilelayer has cell now inheriting from object.  tiled.pro updated to compile the new files.
 
 FORMS += aboutdialog.ui \
     mainwindow.ui \
