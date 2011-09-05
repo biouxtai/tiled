@@ -78,7 +78,8 @@ private:
     void writeObject(QXmlStreamWriter &w, const MapObject *mapObject);
     void writeProperties(QXmlStreamWriter &w,
                          const Properties &properties);
-
+	void writeCellProperties(QXmlStreamWriter &w,
+							 const TileLayer *tileLayer);
     QDir mMapDir;     // The directory in which the map is being saved
     GidMapper mGidMapper;
     bool mUseAbsolutePaths;
@@ -328,6 +329,7 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
             for (int x = 0; x < tileLayer->width(); ++x) {
                 const uint gid = mGidMapper.cellToGid(tileLayer->cellAt(x, y));
                 tileData.append(QString::number(gid));
+                
                 if (x != tileLayer->width() - 1
                     || y != tileLayer->height() - 1)
                     tileData.append(QLatin1String(","));
@@ -362,6 +364,9 @@ void MapWriterPrivate::writeTileLayer(QXmlStreamWriter &w,
     }
 
     w.writeEndElement(); // </data>
+
+	writeCellProperties(w,tileLayer);
+
     w.writeEndElement(); // </layer>
 }
 
@@ -451,6 +456,28 @@ void MapWriterPrivate::writeObject(QXmlStreamWriter &w,
         w.writeAttribute(QLatin1String("height"), QString::number(height));
     writeProperties(w, mapObject->properties());
     w.writeEndElement();
+}
+
+void MapWriterPrivate::writeCellProperties(QXmlStreamWriter &w,
+											const TileLayer *tileLayer)
+{
+	w.writeStartElement(QLatin1String("cell"));
+	
+    for (int y = 0; y < tileLayer->height(); ++y) {
+        for (int x = 0; x < tileLayer->width(); ++x) {
+            w.writeStartElement(QLatin1String("properties"));
+
+            Properties::const_iterator it = tileLayer->cellAt(x, y).properties().constBegin();
+            Properties::const_iterator it_end = tileLayer->cellAt(x, y).properties().constEnd();
+            for (; it != it_end; ++it) {
+                // output the tile information
+                w.writeAttribute(it.key(),it.value());    
+            }
+
+            w.writeEndElement();
+        }
+    }
+	w.writeEndElement();
 }
 
 void MapWriterPrivate::writeProperties(QXmlStreamWriter &w,
